@@ -2,7 +2,7 @@ name: Android CI/CD
 
 on:
   push:
-    branches: [ "main" ] # যখনই মেইন ব্রাঞ্চে কোড পুশ করবেন, এটি রান হবে
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -17,13 +17,12 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: gradle
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
 
-    - name: Build APK with Gradle
-      run: ./gradlew assembleRelease
+    - name: Build APK
+      run: gradle assembleRelease
 
     - name: Upload Output APK
       uses: actions/upload-artifact@v4
