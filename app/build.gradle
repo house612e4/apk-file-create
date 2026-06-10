@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
-    id 'org.jetbrains.kotlin:android'
+    // এখানে ভুলটি ছিল, সেটি সংশোধন করা হয়েছে:
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
@@ -20,6 +21,15 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    
+    // Kotlin এর জন্য কম্পাইলার অপশন যোগ করা ভালো অভ্যাস
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
 }
 
