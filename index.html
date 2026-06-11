@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>বাংলা রাইটার — MT Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Serif+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== EXACT COLORS FROM SCREENSHOT ===== */
+:root {
+  --bg:        #0e0e1a;   /* page background - very dark navy */
+  --card:      #14142a;   /* card background */
+  --card2:     #1a1a35;   /* slightly lighter card */
+  --input-bg:  #1e1e38;   /* input fields */
+  --border:    #2a2a4a;   /* borders */
+  --border2:   #353560;
+  --purple:    #7c3aed;   /* main purple button */
+  --purple2:   #8b5cf6;
+  --violet:    #a855f7;
+  --purple-glow: rgba(124,58,237,0.3);
+  --pink-icon: #ec4899;
+  --green-icon:#10b981;
+  --blue-icon: #3b82f6;
+  --orange-icon:#f59e0b;
+  --cyan-icon: #06b6d4;
+  --yellow-icon:#eab308;
+  --text:      #e2e8f0;
+  --text2:     #94a3b8;
+  --text3:     #64748b;
+  --text4:     #475569;
+  --white:     #ffffff;
+  --red:       #f87171;
+  --gold:      #f59e0b;
+  --topbar-h:  72px;
+  --nav-h:     56px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Hind Siliguri',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+}
+
+/* ===== TOPBAR — exact from screenshot ===== */
+.topbar{
+  height:var(--topbar-h);
+  background:#0e0e1a;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+  padding:0 32px;gap:20px;
+  position:sticky;top:0;z-index:200;
+}
+/* MT Studio logo — purple MT, white Studio */
+.logo{
+  display:flex;align-items:center;gap:2px;
+  font-size:1.35rem;font-weight:900;
+  letter-spacing:-0.5px;text-decoration:none;flex-shrink:0;
+  font-family:'Hind Siliguri',sans-serif;
+}
+.logo .mt{color:var(--purple2);}
+.logo .studio{color:#fff;}
+/* divider */
+.topbar-div{width:1px;height:30px;background:var(--border2);flex-shrink:0;}
+/* title block */
+.topbar-title-block{}
+.topbar-title{
+  font-size:1.45rem;font-weight:800;color:#fff;
+  font-family:'Noto Serif Bengali',serif;
+  line-height:1.2;
+}
+.topbar-sub{font-size:0.72rem;color:var(--text3);margin-top:2px;}
+/* powered badge */
+.powered{
+  margin-left:auto;
+  display:flex;align-items:center;gap:6px;
+  border:1.5px solid var(--purple2);
+  border-radius:22px;
+  padding:7px 16px;
+  font-size:0.75rem;font-weight:600;color:var(--purple2);
+  white-space:nowrap;
+}
+.powered .bolt{color:var(--gold);font-size:0.9rem;}
+/* purple line under topbar */
+.topbar-line{
+  height:2px;
+  background:linear-gradient(90deg,var(--purple),var(--violet),var(--purple));
+}
+
+/* ===== NAV TABS — exact from screenshot ===== */
+.navwrap{
+  background:#0e0e1a;
+  border-bottom:1px solid var(--border);
+  padding:0 32px;
+  position:sticky;top:var(--topbar-h);z-index:199;
+}
+/* subtract 2px for the topbar-line */
+.navwrap{top:calc(var(--topbar-h) + 2px);}
+.navtabs{
+  display:flex;gap:6px;
+  padding:10px 0;
+  overflow-x:auto;scrollbar-width:none;
+}
+.navtabs::-webkit-scrollbar{display:none;}
+.navtab{
+  display:flex;align-items:center;gap:7px;
+  padding:9px 18px;border-radius:9px;
+  font-family:'Hind Siliguri',sans-serif;
+  font-size:0.83rem;font-weight:500;
+  border:none;cursor:pointer;
+  white-space:nowrap;transition:all 0.18s;
+  color:var(--text2);background:transparent;
+}
+.navtab:hover{background:var(--card2);color:var(--text);}
+/* active = filled purple */
+.navtab.active{
+  background:var(--purple);color:#fff;
+  box-shadow:0 0 18px var(--purple-glow);
+}
+/* individual tab icon colors like screenshot */
+.navtab:nth-child(1).active{background:var(--purple);}
+.navtab:nth-child(2){color:#4ade80;}
+.navtab:nth-child(3){color:#60a5fa;}
+.navtab:nth-child(4){color:#fb923c;}
+.navtab:nth-child(5){color:#f472b6;}
+.navtab:nth-child(6){color:#facc15;}
+
+/* ===== PANELS ===== */
+.panel{display:none;}
+.panel.active{display:block;animation:fadeUp 0.22s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== PAGE WRAP ===== */
+.pagewrap{max-width:900px;margin:0 auto;padding:24px 20px 0;}
+
+/* ===== FORM CARD (content plan, etc.) ===== */
+.fcard{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:22px 24px;
+  margin-bottom:18px;
+}
+.fcard-head{
+  display:flex;align-items:center;gap:10px;
+  font-size:1.05rem;font-weight:700;color:#fff;
+  margin-bottom:4px;
+}
+.fcard-head .icon{font-size:1.15rem;}
+.fcard-desc{
+  font-size:0.77rem;color:var(--text3);
+  margin-bottom:18px;line-height:1.55;
+}
+.free-tag{
+  display:inline-flex;align-items:center;gap:4px;
+  background:rgba(245,158,11,0.15);
+  border:1px solid rgba(245,158,11,0.35);
+  color:var(--gold);font-size:0.68rem;
+  padding:2px 9px;border-radius:20px;
+  margin-left:6px;
+}
+
+/* 3-col grid for form fields */
+.fgrid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:14px;
+}
+@media(max-width:720px){.fgrid{grid-template-columns:1fr 1fr;}}
+@media(max-width:480px){.fgrid{grid-template-columns:1fr;}}
+
+.field label{
+  display:block;font-size:0.74rem;color:var(--text2);
+  margin-bottom:5px;font-weight:500;
+}
+.req{color:var(--red);margin-left:2px;}
+.field input,.field select,.field textarea{
+  width:100%;
+  background:var(--input-bg);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:9px 12px;
+  color:var(--text);
+  font-family:'Hind Siliguri',sans-serif;
+  font-size:0.84rem;
+  outline:none;
+  transition:border-color 0.18s,box-shadow 0.18s;
+  -webkit-appearance:none;
+}
+.field input::placeholder,.field textarea::placeholder{color:var(--text4);}
+.field input:focus,.field select:focus,.field textarea:focus{
+  border-color:var(--purple2);
+  box-shadow:0 0 0 3px rgba(139,92,246,0.18);
+}
+/* dropdown arrow */
+.field select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2364748b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 10px center;
+  padding-right:30px;
+  cursor:pointer;
+}
+.field select option{background:var(--card2);}
+.field textarea{resize:vertical;min-height:65px;}
+
+/* generate button — purple gradient, rounded */
+.btn-gen{
+  display:inline-flex;align-items:center;gap:8px;
+  background:linear-gradient(90deg,var(--purple) 0%,var(--violet) 100%);
+  color:#fff;border:none;border-radius:10px;
+  padding:12px 26px;
+  font-family:'Hind Siliguri',sans-serif;
+  font-size:0.9rem;font-weight:600;
+  cursor:pointer;margin-top:14px;
+  transition:all 0.2s;
+  box-shadow:0 4px 22px rgba(124,58,237,0.35);
+}
+.btn-gen:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(124,58,237,0.45);}
+.btn-gen:disabled{opacity:0.55;cursor:not-allowed;transform:none;}
+.spin{animation:spin 0.9s linear infinite;display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== OUTPUT PLACEHOLDER CARD ===== */
+.ocard{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:20px 24px;
+  margin-bottom:24px;
+}
+.ocard-head{
+  display:flex;align-items:center;gap:8px;
+  font-size:0.85rem;color:var(--text2);
+  margin-bottom:14px;
+}
+.ocard-head strong{
+  font-family:'Noto Serif Bengali',serif;
+  font-size:1rem;color:#fff;margin-right:4px;
+}
+.ocard-head span{font-size:0.72rem;color:var(--text4);}
+
+/* empty state inside output card */
+.empty-st{
+  background:var(--input-bg);
+  border-radius:10px;
+  padding:44px 20px;
+  text-align:center;
+  color:var(--text3);
+}
+.empty-st .eicon{
+  font-size:2.2rem;margin-bottom:12px;
+  color:var(--purple2);opacity:0.5;
+}
+.empty-st p{font-size:0.82rem;color:var(--text3);line-height:1.55;}
+.empty-st .esub{font-size:0.74rem;color:var(--text4);margin-top:5px;}
+
+/* ===== FEATURE CARDS GRID (3 cols) ===== */
+.feat-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:14px;
+  margin-bottom:28px;
+}
+@media(max-width:720px){.feat-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:480px){.feat-grid{grid-template-columns:1fr;}}
+
+.fc{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:20px;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.fc:hover{border-color:var(--border2);transform:translateY(-2px);}
+.fc-icon{
+  font-size:1.4rem;margin-bottom:10px;display:block;
+}
+.fc-title{
+  font-size:0.9rem;font-weight:700;color:#fff;
+  margin-bottom:6px;
+  display:flex;align-items:center;gap:6px;
+}
+.fc-desc{
+  font-size:0.75rem;color:var(--text2);
+  line-height:1.55;margin-bottom:14px;
+}
+.btn-use{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--input-bg);
+  border:1px solid var(--border2);
+  border-radius:8px;
+  padding:6px 13px;
+  font-family:'Hind Siliguri',sans-serif;
+  font-size:0.74rem;color:var(--text2);
+  cursor:pointer;transition:all 0.16s;
+}
+.btn-use:hover{background:var(--purple);color:#fff;border-color:var(--purple);}
+
+/* premium card */
+.fc-premium{
+  background:linear-gradient(140deg,rgba(124,58,237,0.18),rgba(168,85,247,0.08));
+  border-color:rgba(124,58,237,0.4);
+}
+.fc-premium:hover{border-color:rgba(124,58,237,0.7);}
+.fc-premium .fc-title{color:var(--gold);}
+.prem-list{list-style:none;margin-bottom:14px;}
+.prem-list li{
+  font-size:0.74rem;color:var(--text2);
+  padding:2px 0;display:flex;align-items:center;gap:6px;
+}
+.prem-list li::before{content:'•';color:var(--purple2);}
+.btn-upgrade{
+  width:100%;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  background:linear-gradient(90deg,var(--purple),var(--violet));
+  color:#fff;border:none;border-radius:8px;
+  padding:9px 16px;
+  font-family:'Hind Siliguri',sans-serif;
+  font-size:0.8rem;font-weight:600;
+  cursor:pointer;
+  box-shadow:0 3px 14px rgba(124,58,237,0.35);
+  transition:all 0.2s;
+}
+.btn-upgrade:hover{transform:translateY(-1px);}
+
+/* ===== DAY CARDS ===== */
+.action-row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px;}
+.btn-ac{
+  display:flex;align-items:center;gap:5px;
+  background:var(--input-bg);border:1px solid var(--border2);
+  border-radius:7px;padding:6px 13px;
+  font-family:'Hind Siliguri',sans-serif;font-size:0.76rem;
+  color:var(--text2);cursor:pointer;transition:all 0.15s;
+}
+.btn-ac:hover{border-color:var(--purple2);color:#fff;}
+.btn-ac.pri{background:var(--purple);color:#fff;border-color:var(--purple);}
+
+.week-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.wtag{
+  font-size:0.73rem;color:var(--text2);
+  background:var(--input-bg);border:1px solid var(--border);
+  border-radius:6px;padding:4px 10px;
+}
+
+.days-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:540px){.days-grid{grid-template-columns:1fr;}}
+
+.dcard{
+  background:var(--input-bg);border:1px solid var(--border);
+  border-radius:11px;padding:15px;
+  transition:border-color 0.18s;
+  position:relative;overflow:hidden;
+}
+.dcard:hover{border-color:var(--border2);}
+.dcard::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--purple),var(--violet));
+  opacity:0;transition:opacity 0.18s;
+}
+.dcard:hover::after{opacity:1;}
+.dtop{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;}
+.dnum{font-size:0.68rem;color:var(--text4);}
+.dtype{
+  font-size:0.64rem;padding:2px 7px;border-radius:5px;
+  background:rgba(124,58,237,0.2);color:var(--violet);
+  border:1px solid rgba(124,58,237,0.3);
+}
+.dtitle{
+  font-size:0.92rem;font-weight:700;
+  font-family:'Noto Serif Bengali',serif;
+  color:#fff;margin-bottom:7px;line-height:1.35;
+}
+.dmeta{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+.dmeta span{font-size:0.68rem;color:var(--text4);}
+.dhook{
+  font-size:0.76rem;color:var(--text2);font-style:italic;
+  border-left:2px solid var(--purple2);padding-left:7px;
+  margin-bottom:8px;line-height:1.5;
+}
+.dbody{font-size:0.73rem;color:var(--text3);line-height:1.6;margin-bottom:6px;}
+.dcta{font-size:0.72rem;color:var(--violet);margin-bottom:4px;}
+.dtags{font-size:0.67rem;color:#3d3a6e;line-height:1.8;}
+.dbtns{
+  display:flex;gap:5px;margin-top:9px;
+  padding-top:9px;border-top:1px solid var(--border);
+}
+.dbtn{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:3px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:6px;padding:5px;font-size:0.68rem;
+  color:var(--text3);cursor:pointer;
+  font-family:'Hind Siliguri',sans-serif;transition:all 0.14s;
+}
+.dbtn:hover{background:var(--card2);color:#fff;border-color:var(--purple2);}
+
+/* result box */
+.rbox{
+  background:var(--input-bg);border:1px solid var(--border);
+  border-radius:11px;padding:18px;margin-top:12px;
+  font-size:0.85rem;color:var(--text);line-height:1.85;
+  white-space:pre-wrap;word-break:break-word;
+}
+
+/* shimmer */
+.shimmer{
+  background:linear-gradient(90deg,var(--card) 25%,var(--card2) 50%,var(--card) 75%);
+  background-size:200% 100%;animation:shimmer 1.3s infinite;
+  border-radius:9px;
+}
+@keyframes shimmer{to{background-position:-200% 0}}
+
+/* brand chip */
+.bchips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.bchip{
+  background:var(--card2);border:1px solid var(--border);
+  border-radius:8px;padding:7px 12px;
+  font-size:0.76rem;color:var(--text2);
+  display:flex;align-items:center;gap:8px;
+}
+.bchip .xbtn{color:var(--red);cursor:pointer;}
+
+/* ===== FOOTER ===== */
+footer{
+  background:#0e0e1a;
+  border-top:1px solid var(--border);
+  margin-top:56px;
+  position:relative;z-index:1;
+}
+.footer-inner{
+  max-width:900px;margin:0 auto;
+  display:grid;grid-template-columns:2.2fr 1fr 1fr;gap:40px;
+  padding:40px 20px 32px;
+}
+@media(max-width:640px){.footer-inner{grid-template-columns:1fr;gap:28px;}}
+.f-brand .fl{
+  display:flex;align-items:center;gap:2px;
+  font-size:1.25rem;font-weight:900;
+  margin-bottom:10px;font-family:'Hind Siliguri',sans-serif;
+}
+.f-brand .fl .mt{color:var(--purple2);}
+.f-brand .fl .st{color:#fff;}
+.fdesc{font-size:0.77rem;color:var(--text4);line-height:1.6;margin-bottom:6px;}
+.fcopy{font-size:0.71rem;color:var(--text4);}
+.socials{display:flex;gap:7px;margin-top:14px;}
+.soc{
+  width:30px;height:30px;border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.78rem;font-weight:700;
+  border:1px solid var(--border2);background:var(--card);
+  color:var(--text2);cursor:pointer;transition:all 0.15s;
+  text-decoration:none;
+}
+.soc:hover{background:var(--purple);border-color:var(--purple);color:#fff;}
+.soc.fb{color:#1877f2;}
+.soc.yt{color:#ff0000;}
+.soc.ig{color:#e4405f;}
+.soc.li{color:#0077b5;}
+.fcol h4{font-size:0.8rem;font-weight:700;color:var(--text2);margin-bottom:12px;}
+.flinks{list-style:none;display:flex;flex-direction:column;gap:7px;}
+.flinks a{font-size:0.76rem;color:var(--text4);text-decoration:none;transition:color 0.15s;}
+.flinks a:hover{color:var(--purple2);}
+.fcontact{display:flex;flex-direction:column;gap:7px;}
+.fci{display:flex;align-items:center;gap:7px;font-size:0.75rem;color:var(--text4);}
+/* MT circle badge bottom right of footer */
+.mt-circle{
+  position:absolute;bottom:40px;right:20px;
+  width:56px;height:56px;border-radius:14px;
+  background:linear-gradient(135deg,var(--purple),var(--violet));
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-weight:900;font-size:0.78rem;color:#fff;
+  box-shadow:0 4px 18px rgba(124,58,237,0.4);
+  line-height:1.1;
+}
+.mt-circle .mts{font-size:0.6rem;font-weight:500;opacity:0.85;}
+
+.footer-bar{
+  border-top:1px solid var(--border);
+  text-align:center;
+  padding:13px 20px;
+  font-size:0.74rem;color:var(--text4);
+  background:#0a0a16;
+}
+.footer-bar span{color:var(--purple2);}
+
+/* ===== TOAST ===== */
+.toast{
+  position:fixed;bottom:28px;left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:var(--card2);border:1px solid var(--purple2);
+  color:var(--text);padding:9px 20px;
+  border-radius:9px;font-size:0.78rem;
+  z-index:9999;opacity:0;
+  transition:all 0.25s;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a class="logo" href="#" onclick="showPanel('cp');return false;">
+    <span class="mt">MT</span><span class="studio"> Studio</span>
+  </a>
+  <div class="topbar-div"></div>
+  <div class="topbar-title-block">
+    <div class="topbar-title">বাংলা রাইটার</div>
+    <div class="topbar-sub">দেশের প্রথম ফ্রেমওয়ার্ক ভিত্তিক AI কন্টেন্ট রাইটার</div>
+  </div>
+  <div class="powered">
+    <span class="bolt">⚡</span> Powered by MT Studio
+  </div>
+</div>
+<div class="topbar-line"></div>
+
+<!-- NAV TABS -->
+<div class="navwrap">
+  <div class="navtabs">
+    <button class="navtab active" id="tab-cp" onclick="showPanel('cp')">
+      📅 কন্টেন্ট প্ল্যান
+    </button>
+    <button class="navtab" id="tab-hk" onclick="showPanel('hk')">
+      🪝 হুক জেনারেটর
+    </button>
+    <button class="navtab" id="tab-vh" onclick="showPanel('vh')">
+      🖼️ ভিজ্যুয়াল হুক প্রো
+    </button>
+    <button class="navtab" id="tab-sm" onclick="showPanel('sm')">
+      🎬 স্টোরি মেকার (OVC)
+    </button>
+    <button class="navtab" id="tab-bm" onclick="showPanel('bm')">
+      🧠 ব্র্যান্ড মেমরি
+    </button>
+    <button class="navtab" id="tab-cw" onclick="showPanel('cw')">
+      ✏️ কন্টেন্ট রাইটার প্রো
+    </button>
+  </div>
+</div>
+
+<!-- ================================================================
+     PANEL: কন্টেন্ট প্ল্যান (default/home — matches screenshot exactly)
+     ================================================================ -->
+<div class="panel active" id="panel-cp">
+<div class="pagewrap">
+
+  <!-- Form card -->
+  <div class="fcard">
+    <div class="fcard-head">
+      <span class="icon">📅</span>
+      কন্টেন্ট প্ল্যান
+      <span class="free-tag">⚡ ফ্রি: সর্বোচ্চ ১৫ দিন</span>
+    </div>
+    <div class="fcard-desc">আপনার ব্র্যান্ড / নিশ দিন — পুরো কন্টেন্ট ক্যালেন্ডার তৈরি হয়ে যাবে (হুক, স্ক্রিপ্ট, হ্যাশট্যাগ, পোস্টিং টাইম সব)।</div>
+
+    <div class="fgrid">
+      <div class="field">
+        <label>ব্র্যান্ড / নিশ / প্রোডাক্ট<span class="req"> *</span></label>
+        <input type="text" id="cp-brand" placeholder="যেমন: toothpaste, clothing brand...">
+      </div>
+      <div class="field">
+        <label>টার্গেট অডিয়েন্স</label>
+        <input type="text" id="cp-aud" placeholder="যেমন: যারা দাঁত নিয়ে সচেতন">
+      </div>
+      <div class="field">
+        <label>প্রধান প্ল্যাটফর্ম</label>
+        <select id="cp-plat">
+          <option>Facebook + Instagram</option>
+          <option>Facebook</option>
+          <option>Instagram</option>
+          <option>TikTok</option>
+          <option>YouTube Shorts</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>লক্ষ্য (Goal)</label>
+        <select id="cp-goal">
+          <option>awareness + sales</option>
+          <option>awareness</option>
+          <option>sales</option>
+          <option>engagement</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>কতদিনের প্ল্যান (সর্বোচ্চ ১৫)</label>
+        <input type="number" id="cp-days" value="15" min="3" max="15">
+      </div>
+      <div class="field">
+        <label>টোন</label>
+        <select id="cp-tone">
+          <option>friendly, conversational</option>
+          <option>professional</option>
+          <option>energetic, fun</option>
+          <option>emotional</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>পোস্টিং ফ্রিকোয়েন্সি</label>
+        <select id="cp-freq">
+          <option>1 post / day</option>
+          <option>2 posts / day</option>
+          <option>Every other day</option>
+        </select>
+      </div>
+      <div class="field" style="grid-column:span 2">
+        <label>বিশেষ নোট</label>
+        <input type="text" id="cp-notes" placeholder="যেমন: ফেস্টিভাল, লঞ্চ ডেট...">
+      </div>
+    </div>
+
+    <button class="btn-gen" id="btncp" onclick="doCP()">✨ কন্টেন্ট প্ল্যান তৈরি করুন</button>
+  </div>
+
+  <!-- Output card — starts with empty state -->
+  <div class="ocard">
+    <div class="ocard-head">
+      <span>📋</span>
+      <strong>তৈরি কন্টেন্ট ক্যালেন্ডার</strong>
+      <span>আপনার কন্টেন্ট প্ল্যান এখানে প্রদর্শিত হবে</span>
+    </div>
+    <div id="cp-out">
+      <div class="empty-st">
+        <div class="eicon">📅</div>
+        <p>এখনো কোনো কন্টেন্ট প্ল্যান তৈরি করা হয়নি</p>
+        <p class="esub">উপরের ফর্মটি পূরণ করে ✨ কন্টেন্ট প্ল্যান তৈরি করুন বাটনে ক্লিক করুন</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature cards grid — 3×2 -->
+  <div class="feat-grid">
+    <div class="fc" onclick="showPanel('hk')">
+      <span class="fc-icon">🪝</span>
+      <div class="fc-title">হুক জেনারেটর</div>
+      <div class="fc-desc">যেকোনো বিষয়ের জন্য ৫টি শক্তিশালী হুক তৈরি করুন যা দর্শককে থামিয়ে দেবে।</div>
+      <button class="btn-use">ব্যবহার করুন →</button>
+    </div>
+    <div class="fc" onclick="showPanel('vh')">
+      <span class="fc-icon">🖼️</span>
+      <div class="fc-title">ভিজ্যুয়াল হুক প্রো</div>
+      <div class="fc-desc">Reel / Video-র জন্য স্ক্রিনে দেখানোর মতো চমৎকার ভিজ্যুয়াল হুক টেক্সট তৈরি করুন।</div>
+      <button class="btn-use">ব্যবহার করুন →</button>
+    </div>
+    <div class="fc" onclick="showPanel('sm')">
+      <span class="fc-icon">🎬</span>
+      <div class="fc-title">স্টোরি মেকার (OVC)</div>
+      <div class="fc-desc">Facebook/Instagram Story বা Short Video-র জন্য পূর্ণ স্ক্রিপ্ট তৈরি করুন।</div>
+      <button class="btn-use">ব্যবহার করুন →</button>
+    </div>
+    <div class="fc" onclick="showPanel('bm')">
+      <span class="fc-icon">🧠</span>
+      <div class="fc-title">ব্র্যান্ড মেমরি</div>
+      <div class="fc-desc">আপনার ব্র্যান্ডের তথ্য সেভ করুন — পরবর্তী সব কন্টেন্টে স্বয়ংক্রিয়ভাবে ব্যবহার হবে।</div>
+      <button class="btn-use">ব্যবহার করুন →</button>
+    </div>
+    <div class="fc" onclick="showPanel('cw')">
+      <span class="fc-icon">✏️</span>
+      <div class="fc-title">কন্টেন্ট রাইটার প্রো</div>
+      <div class="fc-desc">যেকোনো বিষয়ে সম্পূর্ণ পোস্ট, ক্যাপশন বা আর্টিকেল লিখুন।</div>
+      <button class="btn-use">ব্যবহার করুন →</button>
+    </div>
+    <div class="fc fc-premium">
+      <span class="fc-icon">⭐</span>
+      <div class="fc-title">প্রিমিয়াম ফিচার</div>
+      <ul class="prem-list">
+        <li>আনলিমিটেড কন্টেন্ট</li>
+        <li>প্রিমিয়াম টেমপ্লেট</li>
+        <li>এক্সপোর্ট ফিচার</li>
+        <li>অ্যানালিটিকার সাপোর্ট</li>
+      </ul>
+      <button class="btn-upgrade" onclick="showToast('শীঘ্রই আসছে!')">আপগ্রেড করুন →</button>
+    </div>
+  </div>
+
+</div><!-- /pagewrap -->
+</div><!-- /panel-cp -->
+
+<!-- ======================== HOOK GEN ======================== -->
+<div class="panel" id="panel-hk">
+<div class="pagewrap">
+  <div class="fcard">
+    <div class="fcard-head"><span class="icon">🪝</span> হুক জেনারেটর</div>
+    <div class="fcard-desc">যেকোনো বিষয়ের জন্য ৫টি শক্তিশালী হুক তৈরি করুন যা দর্শককে থামিয়ে দেবে।</div>
+    <div class="fgrid">
+      <div class="field"><label>বিষয় / টপিক<span class="req"> *</span></label>
+        <input type="text" id="hk-topic" placeholder="যেমন: দাঁত সাদা করার উপায়"></div>
+      <div class="field"><label>কন্টেন্ট টাইপ</label>
+        <select id="hk-type">
+          <option>Reel / Short Video</option><option>Static Post</option>
+          <option>Carousel</option><option>Story</option>
+        </select></div>
+      <div class="field"><label>হুকের ধরন</label>
+        <select id="hk-style">
+          <option>মিক্স (সব ধরন)</option><option>প্রশ্ন দিয়ে</option>
+          <option>চমকে দেওয়া তথ্য</option><option>গল্প শুরু</option>
+        </select></div>
+      <div class="field"><label>ব্র্যান্ড (optional)</label>
+        <input type="text" id="hk-brand" placeholder="optional"></div>
+    </div>
+    <button class="btn-gen" id="btnhk" onclick="doHooks()">🪝 হুক তৈরি করুন</button>
+  </div>
+  <div id="hk-out"></div>
+</div>
+</div>
+
+<!-- ======================== VISUAL HOOK ======================== -->
+<div class="panel" id="panel-vh">
+<div class="pagewrap">
+  <div class="fcard">
+    <div class="fcard-head"><span class="icon">🖼️</span> ভিজ্যুয়াল হুক প্রো</div>
+    <div class="fcard-desc">Reel / Video-র জন্য স্ক্রিনে দেখানোর মতো চমৎকার ভিজ্যুয়াল হুক টেক্সট তৈরি করুন।</div>
+    <div class="fgrid">
+      <div class="field"><label>বিষয়<span class="req"> *</span></label>
+        <input type="text" id="vh-topic" placeholder="যেমন: ৭ দিনে ত্বক উজ্জ্বল"></div>
+      <div class="field"><label>ইমোশন / ভাইব</label>
+        <select id="vh-emo">
+          <option>Curiosity (কৌতূহল)</option><option>Shock (চমক)</option>
+          <option>FOMO</option><option>Inspiration</option><option>Humor</option>
+        </select></div>
+      <div class="field"><label>ব্র্যান্ড (optional)</label>
+        <input type="text" id="vh-brand" placeholder="optional"></div>
+      <div class="field"><label>CTA টাইপ</label>
+        <select id="vh-cta">
+          <option>এখনই কিনুন</option><option>ফলো করুন</option>
+          <option>কমেন্ট করুন</option><option>শেয়ার করুন</option>
+        </select></div>
+    </div>
+    <button class="btn-gen" id="btnvh" onclick="doVH()">🖼️ ভিজ্যুয়াল হুক তৈরি করুন</button>
+  </div>
+  <div id="vh-out"></div>
+</div>
+</div>
+
+<!-- ======================== STORY MAKER ======================== -->
+<div class="panel" id="panel-sm">
+<div class="pagewrap">
+  <div class="fcard">
+    <div class="fcard-head"><span class="icon">🎬</span> স্টোরি মেকার (OVC)</div>
+    <div class="fcard-desc">Facebook/Instagram Story বা Short Video-র জন্য পূর্ণ স্ক্রিপ্ট তৈরি করুন।</div>
+    <div class="fgrid">
+      <div class="field"><label>প্রোডাক্ট / সার্ভিস<span class="req"> *</span></label>
+        <input type="text" id="sm-prod" placeholder="যেমন: হোয়াইটেনিং টুথপেস্ট"></div>
+      <div class="field"><label>ভিডিও দৈর্ঘ্য</label>
+        <select id="sm-len">
+          <option>৩০ সেকেন্ড</option><option>১৫ সেকেন্ড</option><option>৬০ সেকেন্ড</option>
+        </select></div>
+      <div class="field"><label>গল্পের থিম</label>
+        <select id="sm-theme">
+          <option>Before/After রূপান্তর</option><option>সমস্যা → সমাধান</option>
+          <option>ব্যবহারকারীর অভিজ্ঞতা</option><option>পণ্যের বৈশিষ্ট্য</option>
+        </select></div>
+      <div class="field"><label>টার্গেট অডিয়েন্স</label>
+        <input type="text" id="sm-aud" placeholder="যেমন: ১৮-৩৫ বছর বয়সী নারী"></div>
+    </div>
+    <button class="btn-gen" id="btnsm" onclick="doStory()">🎬 স্টোরি স্ক্রিপ্ট তৈরি করুন</button>
+  </div>
+  <div id="sm-out"></div>
+</div>
+</div>
+
+<!-- ======================== BRAND MEMORY ======================== -->
+<div class="panel" id="panel-bm">
+<div class="pagewrap">
+  <div class="fcard">
+    <div class="fcard-head"><span class="icon">🧠</span> ব্র্যান্ড মেমরি</div>
+    <div class="fcard-desc">আপনার ব্র্যান্ডের তথ্য সেভ করুন — পরবর্তী সব কন্টেন্টে স্বয়ংক্রিয়ভাবে ব্যবহার হবে।</div>
+    <div class="fgrid">
+      <div class="field"><label>ব্র্যান্ডের নাম<span class="req"> *</span></label>
+        <input type="text" id="bm-name" placeholder="যেমন: SmileCare"></div>
+      <div class="field"><label>প্রোডাক্ট / সার্ভিস</label>
+        <input type="text" id="bm-prod" placeholder="যেমন: হোয়াইটেনিং টুথপেস্ট"></div>
+      <div class="field"><label>টার্গেট অডিয়েন্স</label>
+        <input type="text" id="bm-aud" placeholder="যেমন: দাঁত সচেতন মানুষ"></div>
+      <div class="field"><label>ব্র্যান্ড ভয়েস</label>
+        <select id="bm-voice">
+          <option>Friendly & Conversational</option><option>Professional</option>
+          <option>Fun & Energetic</option><option>Emotional</option>
+        </select></div>
+      <div class="field" style="grid-column:span 2"><label>বিশেষ তথ্য</label>
+        <textarea id="bm-notes" placeholder="ট্যাগলাইন, অফার, ইউনিক বিষয়..."></textarea></div>
+    </div>
+    <button class="btn-gen" onclick="saveBrand()">💾 ব্র্যান্ড সেভ করুন</button>
+  </div>
+  <div class="ocard">
+    <div class="ocard-head"><strong>সেভ করা ব্র্যান্ড</strong></div>
+    <div class="bchips" id="bchips">
+      <p style="font-size:0.76rem;color:var(--text4)">এখনো কোনো ব্র্যান্ড সেভ হয়নি।</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ======================== CONTENT WRITER ======================== -->
+<div class="panel" id="panel-cw">
+<div class="pagewrap">
+  <div class="fcard">
+    <div class="fcard-head"><span class="icon">✏️</span> কন্টেন্ট রাইটার প্রো</div>
+    <div class="fcard-desc">যেকোনো বিষয়ে সম্পূর্ণ পোস্ট, ক্যাপশন বা আর্টিকেল লিখুন।</div>
+    <div class="fgrid">
+      <div class="field"><label>টপিক<span class="req"> *</span></label>
+        <input type="text" id="cw-topic" placeholder="যেমন: দাঁত ব্রাশ করার সঠিক নিয়ম"></div>
+      <div class="field"><label>কন্টেন্ট টাইপ</label>
+        <select id="cw-type">
+          <option>Facebook Post</option><option>Instagram Caption</option>
+          <option>Reel Script</option><option>Blog Article</option>
+        </select></div>
+      <div class="field"><label>ব্র্যান্ড (optional)</label>
+        <input type="text" id="cw-brand" placeholder="optional"></div>
+      <div class="field"><label>টোন</label>
+        <select id="cw-tone">
+          <option>Friendly & Conversational</option><option>Professional</option>
+          <option>Energetic</option><option>Emotional</option>
+        </select></div>
+      <div class="field" style="grid-column:span 2"><label>অতিরিক্ত নির্দেশনা</label>
+        <textarea id="cw-inst" placeholder="কী কী অন্তর্ভুক্ত করতে চান..."></textarea></div>
+    </div>
+    <button class="btn-gen" id="btncw" onclick="doCW()">✏️ কন্টেন্ট তৈরি করুন</button>
+  </div>
+  <div id="cw-out"></div>
+</div>
+</div>
+
+<!-- ======================== FOOTER ======================== -->
+<footer>
+  <div class="footer-inner">
+    <div class="f-brand">
+      <div class="fl"><span class="mt">MT</span><span class="st"> Studio</span></div>
+      <div class="fdesc">MT Studio বাংলাদেশের ডিজিটাল কন্টেন্ট ক্রিয়েটরদের জন্য স্মার্ট টুলস তৈরি করে, যা আপনার কাজকে করে আরও সহজ।</div>
+      <div class="fcopy">© 2025 MT Studio. All rights reserved.</div>
+      <div class="socials">
+        <a class="soc fb" href="#" title="Facebook">f</a>
+        <a class="soc yt" href="#" title="YouTube">▶</a>
+        <a class="soc ig" href="#" title="Instagram">◉</a>
+        <a class="soc li" href="#" title="LinkedIn">in</a>
+      </div>
+    </div>
+    <div>
+      <h4>দ্রুত লিঙ্ক</h4>
+      <ul class="flinks">
+        <li><a href="#" onclick="showPanel('cp');return false;">হোম</a></li>
+        <li><a href="#" onclick="showPanel('cp');return false;">ফিচারসমূহ</a></li>
+        <li><a href="#" onclick="showToast('শীঘ্রই!');return false;">প্রাইসিং</a></li>
+        <li><a href="#" onclick="showToast('শীঘ্রই!');return false;">সাপোর্ট</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>যোগাযোগ</h4>
+      <div class="fcontact">
+        <div class="fci">✉ hello@mtstudio.ai</div>
+        <div class="fci">🌐 www.mtstudio.ai</div>
+        <div class="fci">📍 বাংলাদেশ</div>
+      </div>
+    </div>
+  </div>
+  <div class="mt-circle">MT<span class="mts">Studio</span></div>
+  <div class="footer-bar">🚀 Crafted with <span>♥</span> by MT Studio</div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== NAVIGATION ===== */
+function showPanel(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.navtab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ===== TOAST ===== */
+function showToast(m){
+  const t=document.getElementById('toast');
+  t.textContent=m;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+/* ===== API ===== */
+async function ai(prompt,sys){
+  const r=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:3000,
+      system:sys||'You are a Bangla social media content expert. Always respond in Bangla.',
+      messages:[{role:'user',content:prompt}]
+    })
+  });
+  const d=await r.json();
+  return d.content?.[0]?.text||'ত্রুটি হয়েছে।';
+}
+
+function esc(s){return String(s||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;').replace(/\n/g,' ');}
+function cpTxt(t){navigator.clipboard.writeText(t.replace(/<br>/g,'\n'));showToast('✅ কপি হয়েছে!');}
+
+/* ===== SHIMMER ===== */
+function shimmer2(){return `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">${Array(4).fill('<div class="shimmer" style="height:155px"></div>').join('')}</div>`;}
+function shimmer1(){return '<div class="shimmer" style="height:120px;margin-top:12px"></div>';}
+
+/* ===== CONTENT PLAN ===== */
+async function doCP(){
+  const brand=document.getElementById('cp-brand').value.trim();
+  if(!brand){showToast('ব্র্যান্ড / প্রোডাক্ট লিখুন!');return;}
+  const plat=document.getElementById('cp-plat').value;
+  const goal=document.getElementById('cp-goal').value;
+  const days=Math.min(15,Math.max(3,parseInt(document.getElementById('cp-days').value)||15));
+  const tone=document.getElementById('cp-tone').value;
+  const freq=document.getElementById('cp-freq').value;
+  const aud=document.getElementById('cp-aud').value;
+  const notes=document.getElementById('cp-notes').value;
+
+  const btn=document.getElementById('btncp');
+  btn.disabled=true;btn.innerHTML='<span class="spin">⏳</span> তৈরি হচ্ছে...';
+  document.getElementById('cp-out').innerHTML=shimmer2();
+
+  const p=`ব্র্যান্ড:${brand}, প্ল্যাটফর্ম:${plat}, লক্ষ্য:${goal}, দিন:${days}, টোন:${tone}, ফ্রিকোয়েন্সি:${freq}, অডিয়েন্স:${aud||'সাধারণ'}, নোট:${notes||'নেই'}
+
+${days} দিনের কন্টেন্ট ক্যালেন্ডার JSON রিটার্ন করুন (ONLY JSON, no markdown):
+{"title":"...","description":"...","weeks":["Week 1: ...","Week 2: ...","Week 3: ..."],"days":[{"day":1,"dayName":"Saturday","title":"পোস্টের শিরোনাম","type":"Reel","platform":"Facebook | Instagram","time":"7:30 AM","hook":"হুক লাইন","body":"মূল বিষয়বস্তু ২-৩ লাইন","cta":"CTA","hashtags":"#হ্যাশট্যাগ"}]}`;
+
+  try{
+    const txt=await ai(p,'Return ONLY valid JSON, no markdown, no explanation. All content in Bangla.');
+    const data=JSON.parse(txt.replace(/```json|```/g,'').trim());
+    renderCP(data,brand);
+  }catch(e){
+    document.getElementById('cp-out').innerHTML=`<div class="rbox">ত্রুটি হয়েছে। আবার চেষ্টা করুন।</div>`;
+  }
+  btn.disabled=false;btn.innerHTML='✨ কন্টেন্ট প্ল্যান তৈরি করুন';
+}
+
+function renderCP(data,brand){
+  window._cpdata=data;
+  const weeks=(data.weeks||[]).map(w=>`<div class="wtag">${w}</div>`).join('');
+  const days=(data.days||[]).map(d=>`
+    <div class="dcard">
+      <div class="dtop">
+        <span class="dnum">Day ${d.day} (${d.dayName||''})</span>
+        <span class="dtype">${d.type||'Post'}</span>
+      </div>
+      <div class="dtitle">${d.title}</div>
+      <div class="dmeta">
+        <span>▪ ${d.platform||''}</span>
+        <span>🕐 ${d.time||''}</span>
+      </div>
+      <div class="dhook">"${d.hook}"</div>
+      <div class="dbody">${d.body}</div>
+      <div class="dcta">CTA: ${d.cta}</div>
+      <div class="dtags">${d.hashtags}</div>
+      <div class="dbtns">
+        <button class="dbtn" onclick="cpTxt('${esc(d.hook+'\n\n'+d.body+'\n\nCTA: '+d.cta+'\n\n'+d.hashtags)}')">📋 কপি</button>
+        <button class="dbtn" onclick="showToast('শেয়ার!')">🔗 শেয়ার</button>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('cp-out').innerHTML=`
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px">
+      <div>
+        <div style="font-size:1.05rem;font-weight:700;font-family:'Noto Serif Bengali',serif;color:#fff">${data.title||brand}</div>
+        <div style="font-size:0.74rem;color:var(--text4);margin-top:3px">${data.description||''}</div>
+      </div>
+      <div class="action-row" style="margin:0">
+        <button class="btn-ac" onclick="copyAll()">📋 Copy All</button>
+        <button class="btn-ac" onclick="showToast('Share!')">🔗 Share</button>
+        <button class="btn-ac pri" onclick="showToast('PDF আসছে!')">💾 Save</button>
+      </div>
+    </div>
+    <div style="font-size:0.72rem;color:var(--text4);margin-bottom:8px">সাপ্তাহিক থিম</div>
+    <div class="week-tags">${weeks}</div>
+    <div class="days-grid">${days}</div>`;
+}
+
+function copyAll(){
+  if(!window._cpdata)return;
+  const t=window._cpdata.days.map(d=>`Day ${d.day}: ${d.title}\n${d.time}|${d.platform}\n${d.hook}\n${d.body}\nCTA:${d.cta}\n${d.hashtags}`).join('\n\n---\n\n');
+  navigator.clipboard.writeText(t);showToast('✅ সব কপি হয়েছে!');
+}
+
+/* ===== HOOKS ===== */
+async function doHooks(){
+  const topic=document.getElementById('hk-topic').value.trim();
+  if(!topic){showToast('টপিক লিখুন!');return;}
+  const btn=document.getElementById('btnhk');
+  btn.disabled=true;btn.innerHTML='<span class="spin">⏳</span> তৈরি হচ্ছে...';
+  document.getElementById('hk-out').innerHTML=shimmer1();
+  const p=`বিষয়:${topic}, টাইপ:${document.getElementById('hk-type').value}, স্টাইল:${document.getElementById('hk-style').value}, ব্র্যান্ড:${document.getElementById('hk-brand').value||'নেই'}\n\n৫টি শক্তিশালী বাংলা হুক লিখুন। প্রতিটি নম্বর দিয়ে। প্রতিটির পর ১ লাইনে কারণ।`;
+  try{
+    const txt=await ai(p);
+    document.getElementById('hk-out').innerHTML=`
+      <div class="ocard">
+        <div class="ocard-head"><strong>🪝 ${topic} — ৫টি হুক</strong></div>
+        <div class="action-row"><button class="btn-ac" onclick="cpTxt('${esc(txt)}')">📋 কপি</button></div>
+        <div class="rbox">${txt.replace(/\n/g,'<br>')}</div>
+      </div>`;
+  }catch(e){document.getElementById('hk-out').innerHTML='<div class="rbox">ত্রুটি হয়েছে।</div>';}
+  btn.disabled=false;btn.innerHTML='🪝 হুক তৈরি করুন';
+}
+
+/* ===== VISUAL HOOK ===== */
+async function doVH(){
+  const topic=document.getElementById('vh-topic').value.trim();
+  if(!topic){showToast('টপিক লিখুন!');return;}
+  const btn=document.getElementById('btnvh');
+  btn.disabled=true;btn.innerHTML='<span class="spin">⏳</span> তৈরি হচ্ছে...';
+  document.getElementById('vh-out').innerHTML=shimmer1();
+  const p=`বিষয়:${topic}, ইমোশন:${document.getElementById('vh-emo').value}, ব্র্যান্ড:${document.getElementById('vh-brand').value||'নেই'}, CTA:${document.getElementById('vh-cta').value}\n\nReel/Video-র জন্য ৩টি ভিজ্যুয়াল হুক ভার্সন। প্রতিটিতে: বড় হেডলাইন, সাব-টেক্সট, CTA। বাংলায়।`;
+  try{
+    const txt=await ai(p);
+    document.getElementById('vh-out').innerHTML=`
+      <div class="ocard">
+        <div class="ocard-head"><strong>🖼️ ভিজ্যুয়াল হুক — ${topic}</strong></div>
+        <div class="action-row"><button class="btn-ac" onclick="cpTxt('${esc(txt)}')">📋 কপি</button></div>
+        <div class="rbox">${txt.replace(/\n/g,'<br>')}</div>
+      </div>`;
+  }catch(e){document.getElementById('vh-out').innerHTML='<div class="rbox">ত্রুটি হয়েছে।</div>';}
+  btn.disabled=false;btn.innerHTML='🖼️ ভিজ্যুয়াল হুক তৈরি করুন';
+}
+
+/* ===== STORY MAKER ===== */
+async function doStory(){
+  const prod=document.getElementById('sm-prod').value.trim();
+  if(!prod){showToast('প্রোডাক্ট লিখুন!');return;}
+  const btn=document.getElementById('btnsm');
+  btn.disabled=true;btn.innerHTML='<span class="spin">⏳</span> তৈরি হচ্ছে...';
+  document.getElementById('sm-out').innerHTML=shimmer1();
+  const p=`প্রোডাক্ট:${prod}, দৈর্ঘ্য:${document.getElementById('sm-len').value}, থিম:${document.getElementById('sm-theme').value}, অডিয়েন্স:${document.getElementById('sm-aud').value||'সাধারণ'}\n\nসম্পূর্ণ বাংলা OVC স্ক্রিপ্ট: ওপেনিং হুক, মূল গল্প, সমাধান, CTA, ক্যামেরা নির্দেশনা।`;
+  try{
+    const txt=await ai(p);
+    document.getElementById('sm-out').innerHTML=`
+      <div class="ocard">
+        <div class="ocard-head"><strong>🎬 স্টোরি স্ক্রিপ্ট — ${prod}</strong></div>
+        <div class="action-row"><button class="btn-ac" onclick="cpTxt('${esc(txt)}')">📋 কপি</button></div>
+        <div class="rbox">${txt.replace(/\n/g,'<br>')}</div>
+      </div>`;
+  }catch(e){document.getElementById('sm-out').innerHTML='<div class="rbox">ত্রুটি হয়েছে।</div>';}
+  btn.disabled=false;btn.innerHTML='🎬 স্টোরি স্ক্রিপ্ট তৈরি করুন';
+}
+
+/* ===== BRAND MEMORY ===== */
+let brands=[];
+try{brands=JSON.parse(localStorage.getItem('mt_brands')||'[]');}catch(e){}
+
+function saveBrand(){
+  const name=document.getElementById('bm-name').value.trim();
+  if(!name){showToast('ব্র্যান্ডের নাম লিখুন!');return;}
+  brands.push({name,id:Date.now(),
+    prod:document.getElementById('bm-prod').value,
+    aud:document.getElementById('bm-aud').value,
+    voice:document.getElementById('bm-voice').value,
+    notes:document.getElementById('bm-notes').value});
+  try{localStorage.setItem('mt_brands',JSON.stringify(brands));}catch(e){}
+  renderBrands();showToast('✅ ব্র্যান্ড সেভ হয়েছে!');
+  document.getElementById('bm-name').value='';
+}
+function delBrand(id){
+  brands=brands.filter(b=>b.id!==id);
+  try{localStorage.setItem('mt_brands',JSON.stringify(brands));}catch(e){}
+  renderBrands();
+}
+function renderBrands(){
+  const c=document.getElementById('bchips');
+  if(!brands.length){c.innerHTML='<p style="font-size:0.75rem;color:var(--text4)">এখনো কোনো ব্র্যান্ড সেভ হয়নি।</p>';return;}
+  c.innerHTML=brands.map(b=>`
+    <div class="bchip">
+      <span>🏷️ <b>${b.name}</b>${b.prod?' — '+b.prod:''}</span>
+      <span class="xbtn" onclick="delBrand(${b.id})">✕</span>
+    </div>`).join('');
+}
+renderBrands();
+
+/* ===== CONTENT WRITER ===== */
+async function doCW(){
+  const topic=document.getElementById('cw-topic').value.trim();
+  if(!topic){showToast('টপিক লিখুন!');return;}
+  const btn=document.getElementById('btncw');
+  btn.disabled=true;btn.innerHTML='<span class="spin">⏳</span> লেখা হচ্ছে...';
+  document.getElementById('cw-out').innerHTML=shimmer1();
+  const p=`টপিক:${topic}, টাইপ:${document.getElementById('cw-type').value}, ব্র্যান্ড:${document.getElementById('cw-brand').value||'নেই'}, টোন:${document.getElementById('cw-tone').value}, নির্দেশনা:${document.getElementById('cw-inst').value||'নেই'}\n\nসম্পূর্ণ বাংলা কন্টেন্ট লিখুন। হ্যাশট্যাগ ও CTA অন্তর্ভুক্ত করুন।`;
+  try{
+    const txt=await ai(p);
+    document.getElementById('cw-out').innerHTML=`
+      <div class="ocard">
+        <div class="ocard-head"><strong>✏️ ${topic}</strong></div>
+        <div class="action-row"><button class="btn-ac" onclick="cpTxt('${esc(txt)}')">📋 কপি</button></div>
+        <div class="rbox">${txt.replace(/\n/g,'<br>')}</div>
+      </div>`;
+  }catch(e){document.getElementById('cw-out').innerHTML='<div class="rbox">ত্রুটি হয়েছে।</div>';}
+  btn.disabled=false;btn.innerHTML='✏️ কন্টেন্ট তৈরি করুন';
+}
+</script>
+</body>
+</html>
